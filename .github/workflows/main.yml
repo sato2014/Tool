@@ -1,27 +1,29 @@
-name: Python application
+name: Deploy API to GitHub Pages
 
 on:
   push:
     branches:
-      - master
+      - main  # mainブランチにプッシュされたときに実行
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.8
-    - name: Run script
-      run: |
-        python main.py
-    - name: deploy
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./api
-        publish_branch: gh-pages
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+
+      - name: Pythonのセットアップ
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.8'
+
+      - name: スクリプト実行
+        run: |
+          python main.py  # JSONを分割してgh-pages用データを生成
+
+      - name: GitHub Pagesへデプロイ
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages  # デプロイするフォルダ
